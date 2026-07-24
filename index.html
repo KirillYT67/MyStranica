@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Загружаем</title>
+  <style>
+    /* ===== ПОЛНОЭКРАННЫЙ КВАДРАТ ===== */
+    #fullscreen-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #797373;
+      z-index: 9999;
+      color: white;
+      font-size: 40px;
+      font-family: Arial, sans-serif;
+      transition: opacity 1s ease;
+    }
+
+    #fullscreen-box h1 {
+      text-align: center;
+      text-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ===== КНОПКИ ===== */
+    .my-button {
+      padding: 12px 24px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .my-button:hover { background-color: #45a049; transform: scale(1.05); }
+    .my-button:active { transform: scale(0.95); }
+
+    .site-button {
+      padding: 12px 24px;
+      background-color: #0072FF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .site-button:hover { transform: scale(1.05); }
+    .site-button:active { transform: scale(0.95); }
+
+    .skip-btn {
+      margin-top: 30px;
+      padding: 12px 24px;
+      background-color: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .skip-btn:hover { transform: scale(1.05); }
+    .skip-btn:active { transform: scale(0.95); }
+  /* ===== КНОПКА СКАЧИВАНИЯ ===== */
+.download-btn {
+  padding: 12px 24px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+.download-btn:hover {
+  background-color: #e68900;
+  transform: scale(1.05);
+}
+.download-btn:active {
+  transform: scale(0.95);
+}
+
+    /* ===== РАДУГА ===== */
+    @keyframes rainbow {
+      0% { color: red; }
+      14% { color: orange; }
+      28% { color: yellow; }
+      42% { color: green; }
+      57% { color: cyan; }
+      71% { color: blue; }
+      85% { color: violet; }
+      100% { color: red; }
+    }
+    .rainbow { animation: rainbow 6.7s ease-in-out infinite; }
+
+    /* ===== BSOD ===== */
+    #bsod-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0000aa;
+      color: #ffffff;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      font-family: 'Courier New', monospace;
+      font-size: 20px;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    #bsod-overlay.show { display: flex; }
+    #bsod-overlay img {
+      max-width: 90%;
+      max-height: 60%;
+      border: 2px solid #00ff00;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== ЗАГРУЗОЧНЫЙ ЭКРАН ===== -->
+  <div id="fullscreen-box">
+    <h2 id="loading-text">Загрузка.</h2>
+    <button onclick="skipLoading()" class="skip-btn">Пропустить</button>
+  </div>
+
+  <!-- ===== BSOD (СКРЫТ) ===== -->
+  <div id="bsod-overlay">
+    <h1>Промежуточный экран</h1>
+    <p>Вы взломали жопу. На ваше устройство устанавливается Emotet.</p>
+    <button onclick="closeBSOD()" style="margin-top:30px;padding:12px 24px;background:#ffffff;color:#0000aa;border:none;border-radius:8px;font-size:18px;cursor:pointer;font-weight:bold;">не нада</button>
+  </div>
+
+  <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+  <h1 id="MyText">Нажми на кнопку</h1>
+  <button id="MyButton" onclick="redactionCode()" class="my-button">Кнопочка</button>
+  <h1 class="rainbow">это очень крутой текст</h1>
+  <button id="SiteButton" onclick="openBrowser()" class="site-button">С кодом помог</button>
+  <a href="#" id="downloadReadme" class="download-btn" download="README.txt">📥 Скачать README.txt</a>
+
+  <script>
+    // ===== ФЛАГ ДЛЯ BSOD =====
+    let isBSODActive = false;
+
+    // ===== СЧЁТЧИК КЛИКОВ =====
+    let clickCount = 0;
+
+    function redactionCode() {
+      clickCount++;
+      const textEl = document.getElementById('MyText');
+
+      if (clickCount === 1) {
+        textEl.textContent = 'Спасибо!';
+      } else if (clickCount >= 5) {
+        isBSODActive = true;
+        const overlay = document.getElementById('bsod-overlay');
+        overlay.classList.add('show');
+        document.title = 'Промежуточный экран';
+        const img = document.getElementById('bsod-image');
+        img.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Windows_XP_BSOD.png/640px-Windows_XP_BSOD.png';
+        img.alt = 'BSOD';
+      } else {
+      }
+    }
+
+    // ===== ЗАКРЫТИЕ BSOD =====
+    function closeBSOD() {
+      setTimeout(() => {
+        document.getElementById('bsod-overlay').classList.add('fade-out');
+        document.title = 'Сайт';
+        isBSODActive = false;
+      }, 5000);
+    }
+
+    // ===== ОТКРЫТИЕ ССЫЛКИ =====
+    function openBrowser() {
+      window.open('https://deepseek.com/en', '_blank');
+    }
+
+    // ===== ПРОПУСК ЗАГРУЗКИ =====
+    function skipLoading() {
+      clearInterval(interval);
+      document.title = 'Сайт';
+      document.getElementById('fullscreen-box').classList.add('fade-out');
+    }
+// ===== СКАЧИВАНИЕ README.txt =====
+document.getElementById('downloadReadme').addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Текст README (ты можешь его изменить)
+  const text = `Руководство по странице ${window.location.href}
+  Если вы увидели "\${window.location.href}", извините. разработчик тупой и не понял как добавить адрес страницы
+  
+  Инструкция:
+  1. Попробуйте нажать на кнопку "Кнопочка", поменяется текст.
+  2. Будьте осторожны. Если нажмёте на кнопку "Кнопочка" 5 раз то вы взломаете жопу и попадёте в промежуточный экран.
+  3. Кнопка "С кодом помог" ведёт на deepseek.com
+  
+  Автор страницы: я
+  Дата: ${new Date(). toLocaleDateString()}`;
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  this.href = url;
+  this.download = 'README.txt';
+  this.click();
+  URL.revokeObjectURL(url);
+});
+
+    // ===== АНИМАЦИЯ ЗАГРУЗКИ =====
+    const dotsPattern = [1, 2, 3, 2, 1];
+    let patternIndex = 0;
+    const loadingText = document.getElementById('loading-text');
+
+    function updateLoading() {
+      const dots = dotsPattern[patternIndex];
+      loadingText.textContent = 'Загрузка' + '.'.repeat(dots);
+      patternIndex = (patternIndex + 1) % dotsPattern.length;
+    }
+
+    const interval = setInterval(updateLoading, 1000);
+
+    // ===== АВТОЗАКРЫТИЕ (С ПРОВЕРКОЙ) =====
+    setTimeout(() => {
+      if (isBSODActive) return;
+      clearInterval(interval);
+      document.title = 'Сайт';
+      document.getElementById('fullscreen-box').classList.add('fade-out');
+    }, 6700);
+  </script>
+
+</body>
+  </html>
